@@ -1,5 +1,4 @@
-// This program simulates specified communication schemes.
-// Author: Raymond Su, raymondsu0110@gmail.com
+// This is the main simulation program.
 //
 // Author: Raymond Su, raymondsu0110@gmail.com
 
@@ -9,16 +8,25 @@
 
 using namespace std;
 
-/* ----- declarations ----- */
+/* --------- declarations --------- */
 void printSettings();
 
-/* ----- global variables ----- */
+/* ------- global variables ------- */
 
-/* ----- main ----- */
+/* ------------- main ------------- */
 int main(int argc, char ** argv)
 {
+    /* ------- general settings ------- */
 	cout << "start simulation ..." << endl;
 	printSettings();
+
+    /* ------ simulation settings ------*/
+
+    /* ------- start simulation ------- */
+
+    /* ------ finish simulation ------- */
+
+    /* ------ wrap up everything ------ */
 
 	return 0;
 }
@@ -26,4 +34,5 @@ int main(int argc, char ** argv)
 /* ----- function definitions ----- */
 void printSettings()
 {
+    cout << "nothing in settings" << endl;
 }
