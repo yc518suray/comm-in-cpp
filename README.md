@@ -1,6 +1,6 @@
 # comm-in-cpp
 
-Simulate various communications schemes in C++.
+This program simulates various communications schemes in C++.
 
 ## Compile
 

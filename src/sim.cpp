@@ -1,6 +1,6 @@
-// Usage:
-//
 // This program simulates specified communication schemes.
+// Author: Raymond Su, raymondsu0110@gmail.com
+//
 // Author: Raymond Su, raymondsu0110@gmail.com
 
 #include<iostream>
