@@ -133,14 +133,17 @@ void BERPlot::plot(string title)
 {
     // plot updated BER curves in each iteration
 
+	// synthesize the title of the plot
+	string plot_title_set = "set title '"  + title + "' font 'Arial,18'";
+
     // some general settings
     gp.sendLine("set logscale y");
-    gp.sendLine("set title 'BPSK BER in AWGN channel' font 'Arial,16'");
+    gp.sendLine(plot_title_set);
     gp.sendLine("set xlabel 'SNR (dB)' font 'Arial,14'");
     gp.sendLine("set ylabel 'Bit Error Rate' font 'Arial,14'");
     gp.sendLine("set format y '10^{%L}'");
     gp.sendLine("set tics font 'Arial,10'");
-    gp.sendLine("set key font ',12'"); // legend settings
+    gp.sendLine("set key box width 4 font 'Arial,12'"); // legend settings
     gp.sendLine("set grid");
 
     // plot

@@ -11,6 +11,7 @@
 #include<bitset>
 
 #include"plot_BER.h"
+#include"transmitter.h"
 
 using namespace std;
 
@@ -20,60 +21,67 @@ int main()
     BERPlot plot;
 
     // some variables
-    const int num_bits = 10000;   // number of bits per iteration
     int Niter = 10000;            // number of iterations
-    int num_total_bits = 0;       // number of total simulated bits
 
     int N_snr = 16;
     vector<double> SNR_dB(N_snr, 0.0);
     vector<double> SNR_lin(SNR_dB.size());
     vector<double> num_error_bits(SNR_dB.size());
     double * BER = new double [SNR_dB.size()];
+	double * theo_BER = new double [SNR_dB.size()];
 
     for(size_t i = 0; i < SNR_dB.size(); i++)
     {
         SNR_dB[i] = double(i);
         SNR_lin[i] = pow(10.0, SNR_dB[i] / 10.0);
     }
+	
+	for(size_t i = 0; i < SNR_dB.size(); i++)
+	{
+		theo_BER[i] = 0.5 * erfc(sqrt(0.5 * SNR_lin[i]));
+	}
 
     // random settings
     random_device rd;
     mt19937 gen(rd());
-    uniform_int_distribution<int> dist(0, 1);
     normal_distribution<double> normal_dist(0, 1); // for AWGN
 
-    // random bits
-    bitset<num_bits> bits;
-    
+    // transmitter settings
+    TxRxSettings tx_settings;
+	tx_settings.name = "test_transmitter";
+	Transmitter tx(gen, tx_settings);
+
+	tx.generate_bits();
+	bitset<NUM_BITS> bits = tx.get_bits();
+
     // the great loop (Niter iterations)
-    vector<double> awgn(num_bits);
-    vector<double> x(num_bits, 0.0);
-    vector<int> y(num_bits, 0);
+    vector<double> awgn(NUM_BITS);
+    vector<int> y(NUM_BITS, 0);
     for(int i = 0; i < Niter; i++)
     {
-        for(int k = 0; k < num_bits; k++)
+        for(int k = 0; k < NUM_BITS; k++)
         {
-            bits.set(k, dist(gen));
             awgn[k] = normal_dist(gen);
         }
 
         for(size_t k = 0; k < SNR_dB.size(); k++)
         {
+			tx.modulation(SNR_lin[k]);
+			vector<vector<double>> x = tx.get_symbols();
+
             double xr = 0;
             int bit_error_count = 0;
-            for(int r = 0; r < num_bits; r++)
+            for(int r = 0; r < NUM_BITS; r++)
             {
-                // Tx (bits to symbols)
-                x[r] = sqrt(SNR_lin[k]) * (2 * bits[r] - 1);
                 // awgn channel
-                xr = x[r] + awgn[r];
+                xr = x[r][0] + awgn[r];
                 // Rx (hard decision)
                 y[r] = (xr > 0);
                 bit_error_count += (y[r] == bits[r])? 0: 1;
             }
             num_error_bits[k] += bit_error_count;
             // error rate calculation
-            BER[k] = num_error_bits[k] / ((double)(i + 1) * num_bits);
+            BER[k] = num_error_bits[k] / ((double)(i + 1) * NUM_BITS);
         }
 
         if(i == 0)
@@ -82,33 +90,36 @@ int main()
             double * snr = new double [SNR_dB.size()];
             for(int k = 0; k < SNR_dB.size(); k++) snr[k] = SNR_dB[k];
             
-            // configure appearance of the curve (first time)
+            // configure appearance of the first curve
             CurveSettings settings;
-            settings.name = "test";
+            settings.name = "sim";
             settings.LineWidth = 2.5;
-            //settings.LineColor = "black";
-            settings.MarkerType = 7;
+            settings.LineColor = "black";
+            settings.MarkerType = 6;
             settings.MarkerSize = 1.5;
             
             plot.addData(BER, snr, SNR_dB.size(), 1, settings);
+
+			// configure apperance of the second curve
+            settings.name = "theo";
+            settings.LineWidth = 2.5;
+            settings.LineColor = "red";
+            settings.MarkerType = 7;
+            settings.MarkerSize = 1.5;
+
+			plot.addData(theo_BER, snr, SNR_dB.size(), 2, settings);
         }
-        else
+        else if((i % 5) == 0)
         {
             // update BER curves
             plot.updateData(BER, SNR_dB.size(), 1);
+        	plot.plot("BER of BPSK in AWGN channel");
         }
-        plot.plot("test title");
+		else;
 
         if((i % 1000) == 0)
         {
             cout << "iteration: " << i << " / " << Niter << endl;
-            //cout << "BER vector = [";
-            //for(size_t k = 0; k < SNR_dB.size(); k++)
-            //{
-            //    cout << BER[k];
-            //    if(k < SNR_dB.size() - 1) cout << ", ";
-            //    else cout << "]" << endl;
-            //}
         }
     }
 
