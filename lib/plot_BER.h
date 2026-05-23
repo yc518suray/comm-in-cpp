@@ -143,7 +143,7 @@ void BERPlot::plot(string title)
     gp.sendLine("set ylabel 'Bit Error Rate' font 'Arial,14'");
     gp.sendLine("set format y '10^{%L}'");
     gp.sendLine("set tics font 'Arial,10'");
-    gp.sendLine("set key box width 4 font 'Arial,12'"); // legend settings
+    gp.sendLine("set key box width 5 height 2 font 'Arial,12'"); // legends
     gp.sendLine("set grid");
 
     // plot

@@ -15,7 +15,7 @@ using namespace std;
 
 
 /* =============== tables & values ============== */
-int QamSize[6] = {-1, 4, -1, 16, 64, 256};
+int QamSize[6] = {-1, 4, -8, 16, 64, 256};
 
 /* ====== non-member function declarations ====== */
 vector<int> bit2qamnum(const bitset<NUM_BITS> & b, int qam_size);

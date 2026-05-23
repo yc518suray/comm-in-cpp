@@ -1,4 +1,4 @@
-// This is a simple program to test the plot_ber functionality.
+// This is a simple program to test the libraries.
 // This program simulates BPSK in AWGN channel.
 //
 // Author: Raymond Su, raymondsu0110@gmail.com
@@ -10,21 +10,22 @@
 #include<vector>
 #include<bitset>
 
-#include"plot_BER.h"
 #include"transmitter.h"
+#include"channel.h"
+#include"receiver.h"
+#include"plot_BER.h"
 
 using namespace std;
 
+
 int main()
 {
-    // BER plotting settings
     BERPlot plot;
+    int Niter = 10000;
 
-    // some variables
-    int Niter = 10000;            // number of iterations
-
-    int N_snr = 16;
-    vector<double> SNR_dB(N_snr, 0.0);
+	/* ===== BER settings ===== */
+    int N_SNR = 16;
+    vector<double> SNR_dB(N_SNR, 0.0);
     vector<double> SNR_lin(SNR_dB.size());
     vector<double> num_error_bits(SNR_dB.size());
     double * BER = new double [SNR_dB.size()];
@@ -35,55 +36,66 @@ int main()
         SNR_dB[i] = double(i);
         SNR_lin[i] = pow(10.0, SNR_dB[i] / 10.0);
     }
-	
 	for(size_t i = 0; i < SNR_dB.size(); i++)
 	{
 		theo_BER[i] = 0.5 * erfc(sqrt(0.5 * SNR_lin[i]));
 	}
 
-    // random settings
+
+	/* === random settings ==== */
     random_device rd;
     mt19937 gen(rd());
-    normal_distribution<double> normal_dist(0, 1); // for AWGN
 
-    // transmitter settings
+	/* ========== Tx ========== */
     TxRxSettings tx_settings;
+	tx_settings.tx_mode = true;
+	tx_settings.mod_type = 0;
 	tx_settings.name = "test_transmitter";
+	
+	// create Tx
 	Transmitter tx(gen, tx_settings);
-
 	tx.generate_bits();
-	bitset<NUM_BITS> bits = tx.get_bits();
 
-    // the great loop (Niter iterations)
-    vector<double> awgn(NUM_BITS);
-    vector<int> y(NUM_BITS, 0);
+	/* ======== Channel ======= */
+	ChannelSettings chnl_settings;
+	chnl_settings.name = "test_channel";
+
+	// create channel
+	Channel channel(gen, chnl_settings);
+
+	/* ========== Rx ========== */
+	TxRxSettings rx_settings;
+	rx_settings.tx_mode = false;
+	rx_settings.mod_type = 0;
+	rx_settings.name = "test_receiver";
+
+	// create Rx
+	Receiver rx(rx_settings);
+
+
+    /* ====== simulation ====== */
     for(int i = 0; i < Niter; i++)
     {
-        for(int k = 0; k < NUM_BITS; k++)
-        {
-            awgn[k] = normal_dist(gen);
-        }
-
         for(size_t k = 0; k < SNR_dB.size(); k++)
         {
-			tx.modulation(SNR_lin[k]);
-			vector<vector<double>> x = tx.get_symbols();
+			// modulation
+			tx.modulation(0.5 * SNR_lin[k]);
 
-            double xr = 0;
-            int bit_error_count = 0;
-            for(int r = 0; r < NUM_BITS; r++)
-            {
-                // awgn channel
-                xr = x[r][0] + awgn[r];
-                // Rx (hard decision)
-                y[r] = (xr > 0);
-                bit_error_count += (y[r] == bits[r])? 0: 1;
-            }
-            num_error_bits[k] += bit_error_count;
+			// awgn channel
+			channel.convolution(tx);
+			channel.awgn();
+
+			// demodulation
+			rx.demodulation(channel, 0.5 * SNR_lin[k]);
+			rx.error_count(tx);
+
             // error rate calculation
+			num_error_bits[k] += rx.get_num_error_bits();
             BER[k] = num_error_bits[k] / ((double)(i + 1) * NUM_BITS);
         }
 
+
+		// presentation
         if(i == 0)
         {
             // add BER curves to plot (first time)
@@ -92,7 +104,7 @@ int main()
             
             // configure appearance of the first curve
             CurveSettings settings;
-            settings.name = "sim";
+            settings.name = "BPSK-sim";
             settings.LineWidth = 2.5;
             settings.LineColor = "black";
             settings.MarkerType = 6;
@@ -101,7 +113,7 @@ int main()
             plot.addData(BER, snr, SNR_dB.size(), 1, settings);
 
 			// configure apperance of the second curve
-            settings.name = "theo";
+            settings.name = "BPSK-theo";
             settings.LineWidth = 2.5;
             settings.LineColor = "red";
             settings.MarkerType = 7;
@@ -123,5 +135,6 @@ int main()
         }
     }
 
+	cout << "simulation complete" << endl;
     return 0;
 }

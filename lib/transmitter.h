@@ -14,6 +14,9 @@
 using namespace std;
 
 
+/* =============== tables & values ============== */
+extern int QamSize[6];
+
 /* ============ struct definitions =============*/
 struct TxRxSettings
 {
@@ -55,6 +58,10 @@ public:
 	// for testing
 	bitset<NUM_BITS> get_bits();
 	vector<vector<double>> get_symbols();
+
+	// friend class
+	friend class Channel;
+	friend class Receiver;
 };
 
 
