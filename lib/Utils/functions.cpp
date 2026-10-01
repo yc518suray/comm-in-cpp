@@ -21,8 +21,8 @@ void QAM_demapping(vector<complex<double>> & v, int qamtype)
 
 	int qamsize = QamSize[qamtype];
 
-	int * map_real;
-	int * map_imag;
+	int * map_real = nullptr;
+	int * map_imag = nullptr;
 	switch(qamsize)
 	{
 		case 4:

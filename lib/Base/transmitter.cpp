@@ -137,8 +137,8 @@ void qammod(vector<int> qn, ComplexVec & sym, int qam_size)
 {
 	// convert integers to QAM constellation points
 	
-	int * map_real;
-	int * map_imag;
+	int * map_real = nullptr;
+	int * map_imag = nullptr;
 	switch(qam_size)
 	{
 		case 4:
