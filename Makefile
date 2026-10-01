@@ -15,7 +15,7 @@ CXXFLAGS := -std=gnu++17 -O2 -Wall -Wextra
 
 # --- 外部依賴 -------------------------------------------------------------
 FFTW_LIB ?= -lfftw3
-EIGEN_DIR ?= /your/path/to/eigen/library
+EIGEN_DIR ?= ../../eigen
 INC := $(if $(strip $(EIGEN_DIR)),-I$(strip $(EIGEN_DIR)),)
 
 LDFLAGS := $(FFTW_LIB)

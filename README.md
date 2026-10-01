@@ -11,11 +11,21 @@ The following libraries should be included:
 
 ## Compile
 
-To be continued...
+Compile the source code using `make`.
+
+The path of the Eigen library should be specified in the Makefile.
 
 ## Usage
 
-To be continued...
+The program consists of three base modules: Transmitter, Channel, and Receiver. OFDM and OTFS modules are derived from Transmitter and Receiver modules. Other modulation schemes can be added in a similar way.
+
+## To-do list
+
+- Transceiver: channel coding/decoding
+- Transceiver: channel estimation (maybe?)
+- Transceiver: AFDM
+- Channel: fractional delay
+- Channel: CFO and STO (maybe?)
 
 ## License
 
