@@ -10,8 +10,6 @@
 #include "transmitter.h"
 #include "channel.h"
 
-using namespace std;
-
 
 /* ============ struct definitions ============ */
 
@@ -20,7 +18,7 @@ class Receiver
 {
 private:
 	TxRxSettings settings;
-	bitset<NUM_BITS> Rx_bits;
+	std::bitset<NUM_BITS> Rx_bits;
 	ComplexVec Rx_sym;
 
 	int num_modsym = 0;

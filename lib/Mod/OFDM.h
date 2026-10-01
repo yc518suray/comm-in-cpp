@@ -19,8 +19,6 @@
 #include "../Base/channel.h"
 #include "../Base/receiver.h"
 
-using namespace Eigen;
-
 
 /* ============= struct definitions ============= */
 struct OFDM_TxRxSettings
@@ -37,16 +35,16 @@ class OFDM_Transmitter : public Transmitter
 {
 private:
 	OFDM_TxRxSettings ofdm_settings;
-	int Nfft = 0;			// row size of OFDM data matrix
-	int Nblock = 0;			// column size of OFDM data matrix
-	int Ncp = 0;			// length of CP
-	MatrixXcd X;			// OFDM data matrix, contains Nfft + Ncp rows
-							// and Nblock columns
-	FFT<double> fft_engine; // FFT engine to perform FFT/IFFT
+	int Nfft = 0;					// row size of OFDM data matrix
+	int Nblock = 0;					// column size of OFDM data matrix
+	int Ncp = 0;					// length of CP
+	Eigen::MatrixXcd X;				// OFDM data matrix, contains Nfft + Ncp rows
+									// and Nblock columns
+	Eigen::FFT<double> fft_engine;	// FFT engine to perform FFT/IFFT
 
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-	OFDM_Transmitter(mt19937 & rand_gen, TxRxSettings set, OFDM_TxRxSettings ofdm_set);
+	OFDM_Transmitter(std::mt19937 & rand_gen, TxRxSettings set, OFDM_TxRxSettings ofdm_set);
 	~OFDM_Transmitter();
 	void modulation();
 
@@ -64,10 +62,10 @@ private:
 	int Nfft = 0;
 	int Nblock = 0;
 	int Ncp = 0;
-	MatrixXcd Y;			// OFDM received data matrix, contains Nfft + Ncp rows
-							// and Nblock columns
-	MatrixXcd H_est;		// estimated DFT-domain channel matrix at Rx
-	FFT<double> fft_engine; // FFT engine to perform FFT/IFFT
+	Eigen::MatrixXcd Y;				// OFDM received data matrix, contains Nfft + Ncp rows
+									// and Nblock columns
+	Eigen::MatrixXcd H_est;			// estimated DFT-domain channel matrix at Rx
+	Eigen::FFT<double> fft_engine;	// FFT engine to perform FFT/IFFT
 
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW

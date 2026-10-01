@@ -16,7 +16,8 @@ extern void lin_conv(ComplexVec & output, ComplexVec & input, ComplexVec & tdl);
 extern void overlap_save();
 extern void overlap_add();
 extern void lin_tv_conv(ComplexVec & output, ComplexVec & input,
-						ComplexVec & tdl, vector<double> & dp, vector<int> & dl, int N1, int N2);
+						ComplexVec & tdl, std::vector<double> & dp,
+						std::vector<int> & dl, int N1, int N2);
 
 
 #endif

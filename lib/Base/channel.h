@@ -13,8 +13,6 @@
 
 #include "transmitter.h"
 
-using namespace std;
-
 
 /* ============= struct definitions ============ */
 struct ChannelSettings
@@ -26,25 +24,25 @@ struct ChannelSettings
 	bool isDelayFractional = false;		// indicate if delays are fractional
 	double delay_resolution = 0.0;		// delay resolution, in ns
 	double Doppler_resolution = 0.0;	// Doppler resolution, in Hz
-	string name;						// name of the channel
+	std::string name;					// name of the channel
 };
 
 /* ============= class definitions ============= */
 class Channel
 {
 private:
-	mt19937 gen;						// random generator
+	std::mt19937 gen;					// random generator
 	ChannelSettings settings;			// basic channel settings
 	ComplexVec Rx_y;					// received time-domain samples at the receiver
 	ComplexVec Tx_x_prev;				// trailing part of Tx_x of the previous frame
 	ComplexVec Tx_x_total;				// Tx_x_total = [Tx_x_prev, Tx_x]
 	ComplexVec TDL_model;				// tapped-delay line model
-	vector<double> Doppler;				// normalized Doppler shifts of the channel
-	vector<double> frac_Delay;			// normalized fractional delay shifts of the channel
-	vector<int> int_Delay;				// normalized integer delay shifts of the channel
+	std::vector<double> Doppler;		// normalized Doppler shifts of the channel
+	std::vector<double> frac_Delay;		// normalized fractional delay shifts of the channel
+	std::vector<int> int_Delay;			// normalized integer delay shifts of the channel
 
 public:
-	Channel(mt19937 & rand_gen, ChannelSettings set);
+	Channel(std::mt19937 & rand_gen, ChannelSettings set);
 	~Channel();
 	void generation(const double * delays, const double * PDP, const double * dopplers);
 	void convolution(Transmitter & tx, int Nit, int NN);

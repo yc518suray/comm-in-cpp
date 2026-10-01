@@ -9,19 +9,17 @@
 #include <vector>
 #include <random>
 
-using namespace std;
-
 
 // about QAM calculations
 extern double QAM_ave_energy_factor(int qamsize);
 extern double QAM_theo_BER(double snr, int qamsize);
-extern void QAM_demapping(vector<complex<double>> & v, int qamsize);
+extern void QAM_demapping(std::vector<std::complex<double>> & v, int qamsize);
 
 // about channel generation
-extern void generate_doppler_shifts(mt19937 & gen, double * arr, double fmax, int P);
+extern void generate_doppler_shifts(std::mt19937 & gen, double * arr, double fmax, int P);
 
 // about basic signal processing
-extern double vec_norm(vector<complex<double>> x);
+extern double vec_norm(std::vector<std::complex<double>> x);
 
 // about program I/O
 extern void save_ber_data();

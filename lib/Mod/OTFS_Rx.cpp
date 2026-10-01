@@ -10,6 +10,7 @@
 #include "OTFS.h"
 #include "../Utils/functions.h"
 
+using namespace std;
 using namespace Eigen;
 
 

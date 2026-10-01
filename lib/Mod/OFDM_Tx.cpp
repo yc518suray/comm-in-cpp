@@ -7,6 +7,7 @@
 
 #include "OFDM.h"
 
+using namespace std;
 using namespace Eigen;
 
 

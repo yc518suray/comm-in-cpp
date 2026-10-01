@@ -185,7 +185,7 @@ int main()
             
             // configure appearance of the first curve
             CurveSettings settings;
-            settings.name = "16QAM-sim-OTFS";
+            settings.name = "16QAM-sim-OFDM";
             settings.LineWidth = 2.5;
             settings.LineColor = "black";
             settings.MarkerType = 6;
@@ -206,7 +206,7 @@ int main()
         {
             // update BER curves
             plot.updateData(BER, N_SNR, 1);
-        	plot.plot("BER of OTFS in doubly-selective channel");
+        	plot.plot("BER of OFDM in freq-selective channel");
         }
 		else;
 

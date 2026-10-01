@@ -17,8 +17,6 @@
 #include "../Base/channel.h"
 #include "../Base/receiver.h"
 
-using namespace Eigen;
-
 
 /* ============= struct definitions ============= */
 struct OTFS_TxRxSettings
@@ -39,15 +37,15 @@ class OTFS_Transmitter : public Transmitter
 {
 private:
 	OTFS_TxRxSettings otfs_settings;
-	int Nd = 0;				// length along the delay axis
-	int Nblock = 0;			// length along the Doppler axis
-	int Npadding = 0;		// length of ZP/CP samples
-	MatrixXcd X;			// OTFS data matrix, contains Nd rows and Nblock columns
-	FFT<double> fft_engine;	// FFT engine to perform FFT/IFFT
+	int Nd = 0;						// length along the delay axis
+	int Nblock = 0;					// length along the Doppler axis
+	int Npadding = 0;				// length of ZP/CP samples
+	Eigen::MatrixXcd X;				// OTFS data matrix, contains Nd rows and Nblock columns
+	Eigen::FFT<double> fft_engine;	// FFT engine to perform FFT/IFFT
 
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-	OTFS_Transmitter(mt19937 & rand_gen, TxRxSettings set, OTFS_TxRxSettings otfs_set);
+	OTFS_Transmitter(std::mt19937 & rand_gen, TxRxSettings set, OTFS_TxRxSettings otfs_set);
 	~OTFS_Transmitter();
 	void modulation();
 
@@ -65,11 +63,11 @@ private:
 	int Nd = 0;
 	int Nblock = 0;
 	int Npadding = 0;
-	MatrixXcd Y;			// OTFS received data matrix
-							// with (Nd - Npadding) rows and Nblock columns
-	MatrixXcd H_est;		// estimated channel matrix at Rx
-							// the target domain is specified in the implementation files
-	FFT<double> fft_engine; // FFT engine to perform FFT/IFFT
+	Eigen::MatrixXcd Y;				// OTFS received data matrix
+									// with (Nd - Npadding) rows and Nblock columns
+	Eigen::MatrixXcd H_est;			// estimated channel matrix at Rx
+									// the target domain is specified in the implementation files
+	Eigen::FFT<double> fft_engine; 	// FFT engine to perform FFT/IFFT
 
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -79,7 +77,7 @@ public:
 	void build_perfect_channel_matrix(Channel & channel, int domain);
 	
 	// detection methods
-	void MRC_detection(Ref<MatrixXcd> R, int Niter, int lmax);
+	void MRC_detection(Eigen::Ref<Eigen::MatrixXcd> R, int Niter, int lmax);
 
 	// for debugging
 };

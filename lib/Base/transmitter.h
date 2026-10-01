@@ -14,11 +14,9 @@
 #include <vector>
 #include <random>
 
-using namespace std;
-
 
 /* =============== typedef section ============== */
-typedef vector<complex<double>> ComplexVec;
+typedef std::vector<std::complex<double>> ComplexVec;
 
 /* ============= struct definitions ============= */
 struct TxRxSettings
@@ -45,17 +43,17 @@ struct TxRxSettings
 	bool differential = false;		// true -> differential encoding
 
 	/* 4. other settings */
-	string name;					// name of this Tx/Rx node
+	std::string name;				// name of this Tx/Rx node
 };
 
 /* ============= class declarations ============= */
 class Transmitter
 {
 private:
-	mt19937 gen;						// random generator
+	std::mt19937 gen;					// random generator
 	TxRxSettings settings;				// basic Tx settings
 	
-	bitset<NUM_BITS> Tx_bits;			// raw data bits
+	std::bitset<NUM_BITS> Tx_bits;		// raw data bits
 	ComplexVec Tx_sym;					// mapped constellation points
 	ComplexVec Tx_x;					// transmitted time-domain samlpes
 
@@ -65,7 +63,7 @@ private:
 	double sqrt_Eave_prev = 1.0;
 
 public:
-	Transmitter(mt19937 & rand_gen, TxRxSettings set);
+	Transmitter(std::mt19937 & rand_gen, TxRxSettings set);
 	~Transmitter();
 	void generate_bits();
 	void channel_coding();
@@ -73,7 +71,7 @@ public:
 	void modulation(); // trivial
 
 	// for debugging
-	bitset<NUM_BITS> get_bits();
+	std::bitset<NUM_BITS> get_bits();
 	ComplexVec get_symbols();
 
 	// friend class

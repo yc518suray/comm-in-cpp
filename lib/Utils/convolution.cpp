@@ -4,6 +4,8 @@
 
 #include "convolution.h"
 
+using namespace std;
+
 
 void lin_conv(ComplexVec & output, ComplexVec & input, ComplexVec & tdl)
 {

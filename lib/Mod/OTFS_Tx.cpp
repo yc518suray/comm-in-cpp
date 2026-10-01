@@ -7,6 +7,7 @@
 
 #include "OTFS.h"
 
+using namespace std;
 using namespace Eigen;
 
 
