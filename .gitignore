@@ -1,5 +1,6 @@
 # directory
 /bin
+/obj
 
 # executables
 *.exe
