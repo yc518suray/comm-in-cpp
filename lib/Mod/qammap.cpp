@@ -1,11 +1,13 @@
-// header to store the QAM constellations
+// cpp file of qammap
 //
 // Author: Raymond Su, raymondsu0110@gmail.com
+//
+// note: REAL -> row, IMAG -> col
 
-#ifndef QAMMAP_H
-#define QAMMAP_H
+#include "qammap.h"
 
-// REAL -> row, IMAG -> col
+
+int QamSize[6] = {-2, 4, -8, 16, 64, 256};
 
 int QAM4_MAP_REAL[2] = {-1, 1};
 int QAM4_MAP_IMAG[2] = {1, -1};
@@ -36,6 +38,3 @@ int QAM256_MAP_IMAG[16] =
 {
 	15, 13, 9, 11, 1, 3, 7, 5, -15, -13, -9, -11, -1, -3, -7, -5
 };
-
-
-#endif

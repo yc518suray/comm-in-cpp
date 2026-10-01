@@ -27,7 +27,7 @@
 class GnuplotPipe {
 public:
     inline GnuplotPipe(bool persist = true) {
-        std::cout << "Opening gnuplot... ";
+        std::cout << "Opening gnuplot ... ";
         pipe = popen(persist ? "gnuplot -persist" : "gnuplot", "w");
         if (!pipe)
             std::cout << "failed!" << std::endl;

@@ -2,12 +2,13 @@
 //
 // Author: Raymond Su, raymondsu0110@gmail.com
 
-#include<string>
-#include<cmath>
-#include<vector>
+#ifndef RECEIVER_H
+#define RECEIVER_H
 
-#include"transmitter.h"
-#include"channel.h"
+#include <bitset>
+
+#include "transmitter.h"
+#include "channel.h"
 
 using namespace std;
 
@@ -20,13 +21,29 @@ class Receiver
 private:
 	TxRxSettings settings;
 	bitset<NUM_BITS> Rx_bits;
+	ComplexVec Rx_sym;
+
+	int num_modsym = 0;
+	int num_rx_bits = 0;
 	int num_error_bits = 0;
 
 public:
 	Receiver(TxRxSettings set);
 	~Receiver();
-	void demodulation(Channel & channel, double Eave);
+	void demodulation(Channel & channel);
+	void demapping(double Eave);
 	void error_count(Transmitter & tx);
+	int get_num_rx_bits();
 
+	// for debugging
 	int get_num_error_bits();
+	ComplexVec get_symbols();
+
+	// friend class
+	friend class OFDM_Receiver;
+	friend class OTFS_Receiver;
+	friend class AFDM_Receiver;
 };
+
+
+#endif

@@ -5,10 +5,10 @@
 #ifndef PLOT_BER_H
 #define PLOT_BER_H
 
-#include<iostream>
-#include<string>
-#include<sstream>
-#include"gnuplot.h"
+#include <iostream>
+#include <string>
+#include <sstream>
+#include "gnuplot.h"
 
 using namespace std;
 
@@ -134,7 +134,7 @@ void BERPlot::plot(string title)
     // plot updated BER curves in each iteration
 
 	// synthesize the title of the plot
-	string plot_title_set = "set title '"  + title + "' font 'Arial,18'";
+	string plot_title_set = "set title '"  + title + "' font 'Arial,24'";
 
     // some general settings
     gp.sendLine("set logscale y");

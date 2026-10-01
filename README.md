@@ -1,24 +1,21 @@
 # comm-in-cpp
 
-This program simulates various communications schemes in C++.
+This program simulates various wireless communication schemes, including QAM, OFDM, and OTFS, in C++.
+
+## Dependency
+
+The following libraries should be included:
+
+- Eigen
+- FFTW
 
 ## Compile
 
-```
-make
-```
-
-Configure `Makefile` before compilation.
+To be continued...
 
 ## Usage
 
-The program consists of three parts: **Channel Generation**, **Simulation**, and **Presentation**.
-
-### Channel Generation
-
-### Simulation
-
-### Presentation
+To be continued...
 
 ## License
 
