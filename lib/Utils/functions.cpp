@@ -5,7 +5,7 @@
 #include <cmath>
 #include <random>
 #include <vector>
-#include <numeric>
+#include <limits>
 
 #include "../Mod/qammap.h"
 #include "functions.h"

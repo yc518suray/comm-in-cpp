@@ -3,11 +3,10 @@
 // Author: Raymond Su, raymondsu0110@gmail.com
 
 #include <cmath>
-#include <bitset>
+#include <vector>
 #include <limits>
 
 #include "../Mod/qammap.h"
-#include "channel.h"
 #include "receiver.h"
 
 using namespace std;

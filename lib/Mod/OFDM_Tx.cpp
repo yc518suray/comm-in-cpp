@@ -2,12 +2,10 @@
 //
 // Author: Raymond Su, raymondsu0110@gmail.com
 
-#include <Eigen/Dense>
 #include <complex>
 #include <iostream>
 
 #include "OFDM.h"
-#include <unsupported/Eigen/FFT>
 
 using namespace Eigen;
 
@@ -62,7 +60,7 @@ void OFDM_Transmitter::modulation()
 	}
 
 	// step 3: append CP to the time-domain matrix
-	MatrixXcd tails = X_temp.block(Nfft - Ncp - 2, 0, Ncp, Nblock);
+	MatrixXcd tails = X_temp.block(Nfft - Ncp, 0, Ncp, Nblock);
 	X.topRows(tails.rows()) = tails;
 	X.bottomRows(X_temp.rows()) = X_temp;
 

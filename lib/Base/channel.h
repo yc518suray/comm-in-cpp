@@ -6,9 +6,10 @@
 #define CHANNEL_H
 
 #include <string>
+#include <cmath>
 #include <complex>
 #include <random>
-#include <cmath>
+#include <vector>
 
 #include "transmitter.h"
 

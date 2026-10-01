@@ -2,6 +2,9 @@
 //
 // Author: Raymond Su, raymondsu0110@gmail.com
 
+#ifndef CHANNEL_MODEL_H
+#define CHANNEL_MODEL_H
+
 
 /* ===== EVA model ====== */
 /* Note: delays are in ns */
@@ -20,3 +23,6 @@ const double EVA_channel_PDP [EVA_channel_size] =
 };
 
 /* ===== test model ===== */
+
+
+#endif

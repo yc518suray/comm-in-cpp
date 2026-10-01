@@ -2,14 +2,13 @@
 //
 // Author: Raymond Su, raymondsu0110@gmail.com
 
-#include <Eigen/Dense>
 #include <cmath>
+#include <vector>
 #include <complex>
 #include <iostream>
 
 #include "OTFS.h"
 #include "../Utils/functions.h"
-#include <unsupported/Eigen/FFT>
 
 using namespace Eigen;
 

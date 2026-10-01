@@ -45,6 +45,7 @@ private:
 	FFT<double> fft_engine; // FFT engine to perform FFT/IFFT
 
 public:
+	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 	OFDM_Transmitter(mt19937 & rand_gen, TxRxSettings set, OFDM_TxRxSettings ofdm_set);
 	~OFDM_Transmitter();
 	void modulation();
@@ -69,6 +70,7 @@ private:
 	FFT<double> fft_engine; // FFT engine to perform FFT/IFFT
 
 public:
+	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 	OFDM_Receiver(TxRxSettings set, OFDM_TxRxSettings ofdm_set);
 	~OFDM_Receiver();
 	void demodulation(Channel & channel);

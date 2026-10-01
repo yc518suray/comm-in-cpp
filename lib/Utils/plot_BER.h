@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+
 #include "gnuplot.h"
 
 using namespace std;

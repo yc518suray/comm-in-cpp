@@ -46,6 +46,7 @@ private:
 	FFT<double> fft_engine;	// FFT engine to perform FFT/IFFT
 
 public:
+	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 	OTFS_Transmitter(mt19937 & rand_gen, TxRxSettings set, OTFS_TxRxSettings otfs_set);
 	~OTFS_Transmitter();
 	void modulation();
