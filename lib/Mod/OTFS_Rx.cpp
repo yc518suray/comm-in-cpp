@@ -64,7 +64,6 @@ void OTFS_Receiver::demodulation(Channel & channel, double Eave)
 	Y.setZero();
 
 	Ref<MatrixXcd> Yr = Map<MatrixXcd>(channel.Rx_y.data(), Nd, Nblock);
-	Yr /= sqrt_Eave;
 
 	// step 1: equalization
 	// we use DT-domain MRC detection here, for integer delay channel
@@ -82,20 +81,17 @@ void OTFS_Receiver::demodulation(Channel & channel, double Eave)
 	// 1 -> delay-time (DT) domain
 	// 2 -> delay-Doppler (DD) domain
 	build_perfect_channel_matrix(channel, 1);
-	
+
 	// DT-domain MRC detection
 	int lmax = *(channel.int_Delay.end() - 1);
-	MRC_detection(Yr, 8, lmax); // number of iterations = 8
+	MRC_detection(Yr, 7, lmax, sqrt_Eave); // number of iterations = 8
 
 	// for AWGN channel only
 	/*if(otfs_settings.frame_format == 0 || otfs_settings.frame_format == 1)
 	{
 		Y = Yr.block(0, 0, Nd - Npadding, Nblock);
 	}
-	else
-	{
-		Y = Yr;
-	}*/
+	else Y = Yr;*/
 
 	// step 2: transform to DD-domain
 	VectorXcd vec_temp(Y.cols());
@@ -121,6 +117,8 @@ void OTFS_Receiver::build_perfect_channel_matrix(Channel & channel, int domain)
 	//
 	// Note: the constructed matrix works only for ZP-OTFS and RZP-OTFS, for now
 
+	H_est.setZero();
+
 	if(domain == 0 || domain == 1)
 	{
 		int P = channel.settings.Npath;		// number of paths
@@ -139,14 +137,14 @@ void OTFS_Receiver::build_perfect_channel_matrix(Channel & channel, int domain)
 				else
 				{
 					// integer delay
-					
-					double expo = 2 * M_PI * channel.Doppler[m] * (n - channel.int_Delay[m]) / NN;
-					complex<double> expo_comp = complex<double>(0, 1) * expo;
 					int l = channel.int_Delay[m];
+
+					double expo = 2 * M_PI * channel.Doppler[m] * (n - l) / NN;
+					complex<double> expo_comp = complex<double>(0, 1) * expo;
 						
 					// for time domain channel matrix
 					int indx1 = n;
-					int indx2 = (l > n)? (n - l + NN): (n - l);
+					int indx2 = (n < l)? (n - l + NN): (n - l);
 					if(domain == 1)
 					{
 						// for DT domain channel matrix
@@ -165,12 +163,13 @@ void OTFS_Receiver::build_perfect_channel_matrix(Channel & channel, int domain)
 	else;
 }
 
-void OTFS_Receiver::MRC_detection(Ref<MatrixXcd> R, int Niter, int lmax)
+void OTFS_Receiver::MRC_detection(Ref<MatrixXcd> R, int Niter, int lmax, double A)
 {
 	// implement MRC detection in DT domain
 	// R		-> the received signal matrix (including ZP/CP)
 	// Niter	-> number of iterations
 	// lmax		-> max integer delay
+	// A		-> square root of average symbol energy
 	//
 	// Note 1: this method is designed for integer delay channels
 	// Note 2: the implementation is for ZP-OTFS (for now)
@@ -199,7 +198,7 @@ void OTFS_Receiver::MRC_detection(Ref<MatrixXcd> R, int Niter, int lmax)
 			indx1 = (m + l) * Nblock;
 			indx2 = m * Nblock;
 			
-			D_m_matrices[m] += H_est.block(indx1, indx2, Nblock, Nblock) *
+			D_m_matrices[m] += H_est.block(indx1, indx2, Nblock, Nblock).adjoint() *
 							   H_est.block(indx1, indx2, Nblock, Nblock);
 		}
 	}
@@ -211,7 +210,7 @@ void OTFS_Receiver::MRC_detection(Ref<MatrixXcd> R, int Niter, int lmax)
 		for(int m = 0; m < Nd - Npadding; m++)
 		{
 			x_m.setZero();
-			// collect each branch and combine
+			// collect and combine from each branch
 			for(int l = 0; l <= lmax; l++)
 			{
 				b_m.setZero();
@@ -235,16 +234,17 @@ void OTFS_Receiver::MRC_detection(Ref<MatrixXcd> R, int Niter, int lmax)
 
 			// ZF equalization
 			x_m = D_m_matrices[m].partialPivLu().solve(x_m);
+			x_m /= A;
 
 			// transform to DD domain delay vector
 			fft_engine.fwd(vtemp1, x_m);
-			
+		
 			// hard decision
 			QAM_demapping(vec_temp1, settings.qam_type);
-
+			
 			// transform back to DT domain delay vector
 			fft_engine.inv(vtemp2, vtemp1);
-			Y.row(m) = vtemp2;
+			Y.row(m) = A * vtemp2;
 		}
 	}
 }

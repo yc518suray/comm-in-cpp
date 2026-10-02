@@ -53,7 +53,7 @@ void Channel::generation(const double * delays, const double * PDP, const double
 		// normalized Doppler shifts
 		if(settings.type == 2)
 		{
-			Doppler.resize(settings.Npath, 0.0);
+			if(Doppler.size() == 0) Doppler.resize(Np, 0.0);
 			for(int i = 0; i < Np; i++)
 			{
 				Doppler[i] = dopplers[i] / settings.Doppler_resolution;

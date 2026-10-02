@@ -66,8 +66,8 @@ void lin_tv_conv(ComplexVec & output, ComplexVec & input,
 			//double expo = 2 * M_PI * dp[m] * (n + N1 - dl[m]) / N2;
 			// case 2: NOT count in N1
 			double expo = 2 * M_PI * dp[m] * (n - dl[m]) / N2;
-
 			complex<double> expo_comp = complex<double>(0, 1) * expo;
+
 			output[n - L] += tdl[m] * exp(expo_comp) * input[n - dl[m]];
 		}
 	}

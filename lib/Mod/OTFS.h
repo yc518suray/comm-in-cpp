@@ -77,7 +77,7 @@ public:
 	void build_perfect_channel_matrix(Channel & channel, int domain);
 	
 	// detection methods
-	void MRC_detection(Eigen::Ref<Eigen::MatrixXcd> R, int Niter, int lmax);
+	void MRC_detection(Eigen::Ref<Eigen::MatrixXcd> R, int Niter, int lmax, double A);
 
 	// for debugging
 };

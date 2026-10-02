@@ -23,6 +23,14 @@ const double EVA_channel_PDP [EVA_channel_size] =
 };
 
 /* ===== test model ===== */
-
+const int dummy_channel_size = 1;
+const double dummy_channel_delays [dummy_channel_size] =
+{
+	0.0
+};
+const double dummy_channel_PDP [dummy_channel_size] =
+{
+	0.0
+};
 
 #endif

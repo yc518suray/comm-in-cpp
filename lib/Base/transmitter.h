@@ -6,7 +6,7 @@
 #define TRANSMITTER_H
 
 // number of bits per iteration/block/frame
-#define NUM_BITS 16400
+#define NUM_BITS 15360
 
 #include <string>
 #include <bitset>

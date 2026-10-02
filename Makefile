@@ -11,7 +11,8 @@
 
 CXX      := g++
 # -std=gnu++17 is for POSIX use of M_PI
-CXXFLAGS := -std=gnu++17 -O2 -Wall -Wextra
+#CXXFLAGS := -std=gnu++17 -O2 -Wall -Wextra
+CXXFLAGS := -std=gnu++17 -O1
 
 # --- 外部依賴 -------------------------------------------------------------
 FFTW_LIB ?= -lfftw3
@@ -125,12 +126,12 @@ $(OBJ_DIR)/lib/test_plot.o: lib/test_plot.cpp
 
 .PHONY: run
 run: all
-	@echo ">>>  running  ./$(TARGET)"
+	@echo ">>> running  ./$(TARGET)"
 	@./$(TARGET)
 
 .PHONY: clean
 clean:
-	@echo ">>>  cleaning obj/ bin/"
+	@echo ">>> cleaning obj/ bin/"
 	@rm -rf $(OBJ_DIR) $(BIN_DIR)
 
 -include $(DEPS)

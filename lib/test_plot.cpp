@@ -21,7 +21,7 @@
 #include "Utils/functions.h"
 #include "Utils/plot_BER.h"
 
-#include "Mod/OFDM.h"
+#include "Mod/OTFS.h"
 
 #define LIGHTSPEED 299792458
 
@@ -48,14 +48,14 @@ int main()
 	
 
 	/* ==== OFDM settings ===== */
-	int Nfft = 64;
-	int Nblock = 64;
-	double CP_ratio = 0.125;
+	//int Nfft = 64;
+	//int Nblock = 64;
+	//double CP_ratio = 0.125;
 
 	/* ==== OTFS settings ===== */
-	//int Ndelay = 64; // delay axis
-	//int Mblock = 64; // Doppler axis
-	//int Npadding = 4;
+	int Ndelay = 64; // delay axis
+	int Mblock = 64; // Doppler axis
+	int Npadding = 4;
 
 	/* === channel settings === */
 	double max_Doppler = (speed / 3.6) * (f_carrier / LIGHTSPEED);
@@ -79,8 +79,8 @@ int main()
 
 	//double energy_factor = 0.5; // for BPSK
 	double energy_factor = QAM_ave_energy_factor(QamSize[Qam]); // for QAM
-	energy_factor = Nfft * energy_factor;		// for OFDM
-	//energy_factor = Mblock * energy_factor;		// for OTFS
+	//energy_factor = Nfft * energy_factor;		// for OFDM
+	energy_factor = Mblock * energy_factor;		// for OTFS
 	for(size_t i = 0; i < N_SNR; i++)
 	{
 		theo_BER[i] = QAM_theo_BER(SNR_lin[i], QamSize[Qam]); // for QAM
@@ -98,29 +98,29 @@ int main()
 	tx_settings.qam_type = Qam;
 	tx_settings.name = "test_transmitter";
 	
-	OFDM_TxRxSettings ofdm_settings;
-	ofdm_settings.Nsubc = Nfft;
-	ofdm_settings.Nblock = Nblock;
-	ofdm_settings.CP_ratio = CP_ratio;
+	//OFDM_TxRxSettings ofdm_settings;
+	//ofdm_settings.Nsubc = Nfft;
+	//ofdm_settings.Nblock = Nblock;
+	//ofdm_settings.CP_ratio = CP_ratio;
 
-	//OTFS_TxRxSettings otfs_settings;
-	//otfs_settings.N_delay = Ndelay;
-	//otfs_settings.M_doppler = Mblock;
-	//otfs_settings.Npadding = Npadding;
-	//otfs_settings.frame_format = 0; // ZP-OTFS
+	OTFS_TxRxSettings otfs_settings;
+	otfs_settings.N_delay = Ndelay;
+	otfs_settings.M_doppler = Mblock;
+	otfs_settings.Npadding = Npadding;
+	otfs_settings.frame_format = 0; // ZP-OTFS
 
 	// create Tx
-	OFDM_Transmitter tx(gen, tx_settings, ofdm_settings);
-	//OTFS_Transmitter tx(gen, tx_settings, otfs_settings);
+	//OFDM_Transmitter tx(gen, tx_settings, ofdm_settings);
+	OTFS_Transmitter tx(gen, tx_settings, otfs_settings);
 
 	/* ======== Channel ======= */
 	ChannelSettings chnl_settings;
-	chnl_settings.type = 1;
+	chnl_settings.type = 2;
 	chnl_settings.Npath = EVA_channel_size;
-	chnl_settings.delay_resolution = T_block * 1e9 / Nfft;		// for OFDM
-	chnl_settings.Doppler_resolution = delta_f;					// for OFDM
-	//chnl_settings.delay_resolution = T_block * 1e9 / Ndelay;	// for OTFS
-	//chnl_settings.Doppler_resolution = delta_f / Mblock;		// for OTFS
+	//chnl_settings.delay_resolution = T_block * 1e9 / Nfft;		// for OFDM
+	//chnl_settings.Doppler_resolution = delta_f;					// for OFDM
+	chnl_settings.delay_resolution = T_block * 1e9 / Ndelay;	// for OTFS
+	chnl_settings.Doppler_resolution = delta_f / Mblock;		// for OTFS
 	chnl_settings.name = "test_channel";
 
 	// create channel
@@ -133,8 +133,8 @@ int main()
 	rx_settings.name = "test_receiver";
 
 	// create Rx
-	OFDM_Receiver rx(rx_settings, ofdm_settings);
-	//OTFS_Receiver rx(rx_settings, otfs_settings);
+	//OFDM_Receiver rx(rx_settings, ofdm_settings);
+	OTFS_Receiver rx(rx_settings, otfs_settings);
 
 
     /* ====== simulation ====== */
@@ -147,7 +147,7 @@ int main()
 		tx.generate_bits();
 
 		// generate Doppler shifts for each path
-		//generate_doppler_shifts(gen, Doppler_vec, max_Doppler, EVA_channel_size);
+		generate_doppler_shifts(gen, Doppler_vec, max_Doppler, EVA_channel_size);
 
 		// update transmission channel
         channel.generation(EVA_channel_delays, EVA_channel_PDP, Doppler_vec);
@@ -159,13 +159,13 @@ int main()
 			tx.modulation();
 
 			// channel
-			//channel.convolution(tx, i, Ndelay * Mblock);			// for OTFS
-			channel.convolution(tx, i, Nfft * Nblock);				// for OFDM
+			channel.convolution(tx, i, Ndelay * Mblock);			// for OTFS
+			//channel.convolution(tx, i, Nfft * Nblock);			// for OFDM
 			channel.awgn();
 
 			// demodulation
-			//rx.demodulation(channel, energy_factor * SNR_lin[k]);	// for OTFS
-			rx.demodulation(channel);								// for OFDM
+			rx.demodulation(channel, energy_factor * SNR_lin[k]);	// for OTFS
+			//rx.demodulation(channel);								// for OFDM
 			rx.demapping(energy_factor * SNR_lin[k]);
 			rx.error_count(tx);
 	
@@ -185,7 +185,7 @@ int main()
             
             // configure appearance of the first curve
             CurveSettings settings;
-            settings.name = "16QAM-sim-OFDM";
+            settings.name = "16QAM-sim-OTFS";
             settings.LineWidth = 2.5;
             settings.LineColor = "black";
             settings.MarkerType = 6;
@@ -206,7 +206,7 @@ int main()
         {
             // update BER curves
             plot.updateData(BER, N_SNR, 1);
-        	plot.plot("BER of OFDM in freq-selective channel");
+        	plot.plot("BER of OTFS in doubly-selective channel");
         }
 		else;
 
